@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/activity_input"
@@ -9,33 +9,122 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.trancaoviet.myhelper.InputActivity"
     android:weightSum="1">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Task"
+        android:id="@+id/textViewAddTask"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/textViewAddTask"/>
     <EditText
 
-        android:layout_height="wrap_content"
-        android:ems="10"
         android:id="@+id/editText"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:hint="Tiêu đề công việc"
         android:layout_width="match_parent"
-        android:inputType="textMultiLine"
+        android:layout_height="wrap_content"
+
+        android:layout_centerHorizontal="true"
+        android:ems="10"
         android:gravity="top|left"
-        android:scrollbars="vertical"/>
+        android:hint="Tiêu đề công việc"
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/textViewAddTask"/>
 
     <EditText
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-
-        android:id="@+id/editText2"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-
-        android:hint="Tiêu đề công việc"
+        android:id="@+id/textViewNoiDung"
         android:layout_width="match_parent"
-        android:singleLine="true"
-        android:layout_weight="0.13" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="0.13"
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="Nội dung công việc"
+        android:inputType="textMultiLine"
+        android:lines="5"
+        android:maxLines="10"
+        android:minLines="3"
+        android:scrollbars="vertical"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText"
+        android:layout_below="@+id/textViewNoiDung"
+        android:layout_marginTop="10dp"
+        android:text="Ngày:"
+        android:textSize="15dp"
+        android:id="@+id/textViewNgay"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textViewNoiDung"
+        android:text="02/10/2018"
+        android:id="@+id/btnDate"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/editText"
+        android:layout_below="@+id/btnDate"
+        android:text="10:20 AM"
+        android:id="@+id/btnTime"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewNgay"
+        android:layout_marginTop="20dp"
+        android:text="Giờ:"
+        android:textSize="15dp"
+        android:id="@+id/textViewGio"/>
+
+    <TextView
+        android:id="@+id/textviewBaoNhac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewGio"
+        android:layout_marginTop="30dp"
+        android:text="Báo nhắc:"
+        android:textSize="15dp" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/btnTime"
+        android:id="@+id/btnNotifycation"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_below="@id/btnNotifycation"
+       android:layout_toLeftOf="@+id/btnSave"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnCancel"
+        android:background="@null"
+
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_below="@id/btnNotifycation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnSave"
+        android:background="@null"
+        />
+</RelativeLayout>

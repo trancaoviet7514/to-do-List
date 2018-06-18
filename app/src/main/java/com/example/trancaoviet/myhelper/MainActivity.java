@@ -1,11 +1,18 @@
 package com.example.trancaoviet.myhelper;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,8 +22,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.File;
@@ -24,10 +35,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    Button btnDate, btnTime, btnCancel, btnSave;
+    Calendar dateSelected = Calendar.getInstance();
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +56,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Content", Toast.LENGTH_LONG).show();
-                xuliThemCongViec();
+
+                showDialogAddTask();
             }
         });
 
@@ -62,9 +78,70 @@ public class MainActivity extends AppCompatActivity
         showAllContactOnDatabase();
     }
 
-    private void xuliThemCongViec() {
-        Intent intent = new Intent(MainActivity.this,InputActivity.class);
-        startActivity(intent);
+    private void showDialogAddTask() {
+
+        final Dialog dialog = new Dialog(this);
+        LayoutInflater inflater = getLayoutInflater();
+        dialog.setTitle("Add Task");
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.activity_input);
+        dialog.show();
+
+        btnDate = (Button) dialog.findViewById(R.id.btnDate);
+        btnTime = (Button) dialog.findViewById(R.id.btnTime);
+        btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+        btnSave = (Button) dialog.findViewById(R.id.btnSave);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener()
+                {
+
+
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+                    {
+
+                        btnTime.setText(selectedHour+":"+selectedMinute);
+
+                    }
+                }, hour, minute, true);
+
+                mTimePicker.setTitle("Pick Time");
+                mTimePicker.show();
+            }
+        });
+        btnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Calendar newCalendar = Calendar.getInstance();
+                DatePickerDialog  datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        dateSelected.set(year, monthOfYear, dayOfMonth, 0, 0);
+
+                        btnDate.setText(dateFormatter.format(dateSelected.getTime()));
+                    }
+
+                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                btnDate.setText(dateFormatter.format(dateSelected.getTime()));
+                datePickerDialog.show();
+            }
+        });
     }
 
     @Override
@@ -133,7 +210,7 @@ public class MainActivity extends AppCompatActivity
     ArrayAdapter<String> AdapterDanhBa;
 
     private void showAllContactOnDatabase() {
-        Toast.makeText(MainActivity.this, "Content", Toast.LENGTH_LONG).show();
+
         database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
         Cursor cursor=database.query("tbTask",null,null,null,null,null,null);
         while (cursor.moveToNext())
@@ -157,6 +234,8 @@ public class MainActivity extends AppCompatActivity
         AdapterDanhBa = new ArrayAdapter<String>(MainActivity.this,
                 android.R.layout.simple_list_item_1,dsdanhba);
         lvDanhBa.setAdapter(AdapterDanhBa);
+
+
     }
 
     private void xulySaoChepCSDLtuAsset() {
