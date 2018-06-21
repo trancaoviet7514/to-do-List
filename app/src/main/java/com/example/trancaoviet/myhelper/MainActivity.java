@@ -3,6 +3,7 @@ package com.example.trancaoviet.myhelper;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,9 +32,11 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,8 +49,8 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button btnDate, btnTime, btnCancel, btnSave;
-    Calendar dateSelected = Calendar.getInstance();
+
+    Calendar dateSelected = Calendar.getInstance(); // use for storge data seleted in dialog add task
     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
@@ -75,17 +83,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         addControls();
         addEvents();
 
-        showAllContactOnDatabase();
+        showAllTaskOnDatabase();
     }
 
     private void showDialogAddTask() {
 
         final Dialog dialog = new Dialog(this);
-        LayoutInflater inflater = getLayoutInflater();
-        dialog.setTitle("Add Task");
-        dialog.setCancelable(false);
         dialog.setContentView(R.layout.activity_input);
+        dialog.setCancelable(false);
         dialog.show();
+
+        // define all controls of dialog and set event for them
+        mapAndSetEventControlForDialog(dialog);
+    }
+
+    private void setEventForControlInDialog(Dialog dialog) {
+
+    }
+
+    private void mapAndSetEventControlForDialog(final Dialog dialog) {
+        final Button btnDate, btnTime, btnCancel, btnSave;
+        final EditText edtTaskTitle = (EditText) dialog.findViewById(R.id.edtTaskTitle);
+        final EditText edtTaskContent = (EditText) dialog.findViewById(R.id.edtTaskContent);
+        final ToggleButton btnNotifycation = (ToggleButton) dialog.findViewById(R.id.btnNotifycation);
 
         btnDate = (Button) dialog.findViewById(R.id.btnDate);
         btnTime = (Button) dialog.findViewById(R.id.btnTime);
@@ -142,6 +162,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 datePickerDialog.show();
             }
         });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String TaskTitle = edtTaskTitle.getText().toString();
+                if(TaskTitle.equals("")) TaskTitle = "[Không có tiêu đề]";
+                String TaskContent = edtTaskContent.getText().toString();
+                String Date = btnDate.getText().toString();
+                String Time = btnTime.getText().toString();
+                boolean Notifycation = btnNotifycation.isChecked();
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("Title",TaskTitle);
+                contentValues.put("Content", TaskContent);
+                contentValues.put("Date", Date);
+                contentValues.put("Time", Time);
+                contentValues.put("Notifycation", String.valueOf(Notifycation));
+                contentValues.put("Complete",0);
+
+                long i = database.insert("tbTask", null, contentValues);
+
+                if(i!=-1){
+                    Toast.makeText(MainActivity.this,"Insert sucessful",Toast.LENGTH_SHORT).show();
+                    showAllTaskOnDatabase();
+                    edtTaskContent.setText("");
+                    edtTaskTitle.setText("");
+                }
+
+                if(Notifycation){
+                    NotifycationService.TaskList.add(new Task(TaskTitle,TaskContent,Date,Time));
+                    Intent intent = new Intent(MainActivity.this,NotifycationService.class);
+                    startService(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -157,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -182,46 +237,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_UpcomingTask) {
+            showTaskUpComing();
+        } else if (id == R.id.nav_CompleteTask) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_UncompleteTask) {
 
         }
+//
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    private void showTaskUpComing() {
+
+    }
+
     String DATABASE_NAME="HelperDB.sqlite";
     String DB_PATH_SUFFIX = "/databases/";
-    SQLiteDatabase database=null;
+    static SQLiteDatabase database=null;
 
-    ListView lvDanhBa;
-    ArrayList<String> dsdanhba;
-    ArrayAdapter<String> AdapterDanhBa;
+    public static RecyclerView rcvTask;
+    public static ArrayList<Task> TaskList;
+    public static TaskAdapter taskAdapter;
 
-    private void showAllContactOnDatabase() {
+    private void showAllTaskOnDatabase() {
 
         database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
-        Cursor cursor=database.query("tbTask",null,null,null,null,null,null);
+        Cursor cursor=database.query("tbTask",null,null,null,null,null,"Date,Time");
+        TaskList.clear();
         while (cursor.moveToNext())
         {
-            String stt=cursor.getString(0);
-            String Ten=cursor.getString(1);
-            String sdt=cursor.getString(2);
-            dsdanhba.add(stt+"  "+Ten+'\n'+sdt);
+            int id = cursor.getInt(0);
+            String Title=cursor.getString(1);
+            String Content = cursor.getString(2);
+            String Date = cursor.getString(3);
+            String Time = cursor.getString(4);
+            String Notifycation = cursor.getString(5);
+            boolean Complete =  (cursor.getInt(6) == 1);
+            TaskList.add(new Task(id, Title,Content,Date,Time,Notifycation,Complete));//cần chỉnh lại chỗ này------------------------------------------------------------------------------
         }
         cursor.close();
-        AdapterDanhBa.notifyDataSetChanged();
+        taskAdapter.notifyDataSetChanged();
     }
 
     private void addEvents() {
@@ -229,13 +288,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void addControls() {
-        lvDanhBa = (ListView) findViewById(R.id.lvDanhBa);
-        dsdanhba = new ArrayList<String>();
-        AdapterDanhBa = new ArrayAdapter<String>(MainActivity.this,
-                android.R.layout.simple_list_item_1,dsdanhba);
-        lvDanhBa.setAdapter(AdapterDanhBa);
+        rcvTask = (RecyclerView) findViewById(R.id.rcvTask);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,linearLayoutManager.getOrientation());
+        rcvTask.addItemDecoration(dividerItemDecoration);
+        rcvTask.setLayoutManager(linearLayoutManager);
 
+        TaskList = new ArrayList<Task>();
+        taskAdapter = new TaskAdapter(TaskList,MainActivity.this);
+        rcvTask.setAdapter(taskAdapter);
 
+        ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
+            {
+                MainActivity.database.delete("tbTask","id = ?",new String[]{String.valueOf(TaskList.get(viewHolder.getAdapterPosition()).getId())});
+                MainActivity.TaskList.remove(viewHolder.getAdapterPosition());
+                MainActivity.taskAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                MainActivity.taskAdapter.notifyItemRangeChanged(viewHolder.getAdapterPosition(),TaskList.size()+1);
+            }
+
+        });
+        swipeToDismissTouchHelper.attachToRecyclerView(rcvTask);
     }
 
     private void xulySaoChepCSDLtuAsset() {

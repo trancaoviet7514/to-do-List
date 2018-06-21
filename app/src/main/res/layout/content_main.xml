@@ -22,8 +22,8 @@
         android:id="@+id/textView3"
         android:textSize="20dp"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/lvDanhBa" />
+        android:id="@+id/rcvTask" />
 </LinearLayout>

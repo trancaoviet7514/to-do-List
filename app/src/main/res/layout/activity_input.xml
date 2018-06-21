@@ -26,12 +26,12 @@
         android:layout_below="@+id/textViewAddTask"/>
     <EditText
 
-        android:id="@+id/editText"
+        android:id="@+id/edtTaskTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_centerHorizontal="true"
-        android:ems="10"
+
         android:gravity="top|left"
         android:hint="Tiêu đề công việc"
         android:inputType="textMultiLine"
@@ -39,10 +39,10 @@
         android:layout_below="@+id/textViewAddTask"/>
 
     <EditText
-        android:id="@+id/textViewNoiDung"
+        android:id="@+id/edtTaskContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/edtTaskTitle"
         android:layout_centerHorizontal="true"
         android:layout_weight="0.13"
         android:ems="10"
@@ -58,8 +58,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/editText"
-        android:layout_below="@+id/textViewNoiDung"
+        android:layout_alignStart="@+id/edtTaskTitle"
+        android:layout_below="@+id/edtTaskContent"
         android:layout_marginTop="10dp"
         android:text="Ngày:"
         android:textSize="15dp"
@@ -69,14 +69,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/textViewNoiDung"
+        android:layout_below="@+id/edtTaskContent"
         android:text="02/10/2018"
         android:id="@+id/btnDate"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editText"
+        android:layout_alignEnd="@+id/edtTaskTitle"
         android:layout_below="@+id/btnDate"
         android:text="10:20 AM"
         android:id="@+id/btnTime"/>
