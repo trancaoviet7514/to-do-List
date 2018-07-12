@@ -14,42 +14,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Task"
+        android:text="Thêm công việc"
         android:id="@+id/textViewAddTask"
         android:gravity="center"
         android:textSize="20dp"
         android:textColor="@color/colorPrimaryDark"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        android:layout_below="@+id/textViewAddTask"/>
-    <EditText
 
-        android:id="@+id/edtTaskTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_centerHorizontal="true"
-
-        android:gravity="top|left"
-        android:hint="Tiêu đề công việc"
-        android:inputType="textMultiLine"
-        android:scrollbars="vertical"
-        android:layout_below="@+id/textViewAddTask"/>
 
     <EditText
         android:id="@+id/edtTaskContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edtTaskTitle"
+        android:layout_below="@+id/textViewAddTask"
         android:layout_centerHorizontal="true"
         android:layout_weight="0.13"
-        android:ems="10"
+
         android:gravity="top|left"
         android:hint="Nội dung công việc"
         android:inputType="textMultiLine"
-        android:lines="5"
+        android:lines="3"
         android:maxLines="10"
         android:minLines="3"
         android:scrollbars="vertical"
@@ -71,15 +54,18 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/edtTaskContent"
         android:text="02/10/2018"
-        android:id="@+id/btnDate"/>
+        android:id="@+id/btnDate"
+        android:background="@null"
+        />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/edtTaskTitle"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/btnDate"
-        android:text="10:20 AM"
-        android:id="@+id/btnTime"/>
+        android:text="23:59"
+        android:id="@+id/btnTime"
+        android:background="@null"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -105,11 +91,12 @@
 
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/btnTime"
-        android:id="@+id/btnNotifycation"/>
+        android:id="@+id/btnNotifycation"
+        android:checked="false"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="Hủy"
         android:layout_below="@id/btnNotifycation"
        android:layout_toLeftOf="@+id/btnSave"
         android:layout_marginTop="20dp"
@@ -120,7 +107,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="Lưu"
         android:layout_below="@id/btnNotifycation"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"

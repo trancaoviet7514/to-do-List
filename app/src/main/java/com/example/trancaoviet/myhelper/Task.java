@@ -2,7 +2,6 @@ package com.example.trancaoviet.myhelper;
 
 public class Task {
 
-    String Title;
     boolean Complete;
     int Id;
     String Content;
@@ -10,8 +9,8 @@ public class Task {
     String Time;
     String Notifycation;
 
-    public Task(int id, String title,  String content, String date, String time, String notifycation , boolean complete) {
-        Title = title;
+    public Task(int id,  String content, String date, String time, String notifycation , boolean complete) {
+
         Complete = complete;
         Id = id;
         Content = content;
@@ -36,8 +35,8 @@ public class Task {
         Id = id;
     }
 
-    public Task(String title, String content, String date, String time, String notifycation, boolean complete) {
-        Title = title;
+    public Task(String content, String date, String time, String notifycation, boolean complete) {
+
         Content = content;
         Date = date;
         Time = time;
@@ -57,11 +56,6 @@ public class Task {
 
     }
 
-    public void setTitle(String title) {
-
-        Title = title;
-    }
-
     public void setContent(String content) {
         Content = content;
     }
@@ -76,10 +70,6 @@ public class Task {
 
     public void setNotifycation(String notifycation) {
         Notifycation = notifycation;
-    }
-
-    public String getTitle() {
-        return Title;
     }
 
     public String getContent() {

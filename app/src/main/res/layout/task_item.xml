@@ -5,8 +5,8 @@
     <TextView
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Task title"
-        android:id="@+id/txtTaskTitle"
+        android:text="Task content"
+        android:id="@+id/txtTaskContent"
         android:layout_toRightOf="@+id/btnComplete"
         android:layout_marginLeft="10dp"
         android:textSize="20dp"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:text="10:50 AM"
         android:id="@+id/txtTime"
-        android:layout_below="@id/txtTaskTitle"
+        android:layout_below="@id/txtTaskContent"
         android:layout_toRightOf="@id/btnComplete"
         android:layout_marginLeft="10dp"/>
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:text="21/06/2018"
         android:id="@+id/txtDate"
-        android:layout_below="@id/txtTaskTitle"
+        android:layout_below="@id/txtTaskContent"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="60dp"
         android:layout_marginLeft="10dp"/>

@@ -71,8 +71,7 @@ public class NotifycationService extends Service {
                             Notification.Builder builder = new Notification.Builder(NotifycationService.this.getApplicationContext());
                             Uri defaultSoundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notyfication_sound_plucky);
                             builder.setSmallIcon(R.drawable.complete)
-                                    .setContentTitle(TaskList.get(i).getTitle())
-                                    .setContentText(TaskList.get(i).getContent())
+                                    .setContentTitle(TaskList.get(i).getContent())
                                     .setContentIntent(resultPendingIntent)
                                     .setSound(defaultSoundUri);
 
