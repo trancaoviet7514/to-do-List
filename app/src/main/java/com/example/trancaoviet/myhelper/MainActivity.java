@@ -41,6 +41,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -195,9 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void mapAndSetEventControlForDialog(final Dialog dialog) {
 
         final Button btnDate, btnTime, btnCancel, btnSave;
-        final EditText edtTaskTitle = (EditText) dialog.findViewById(R.id.edtTaskTitle);
         final EditText edtTaskContent = (EditText) dialog.findViewById(R.id.edtTaskContent);
-        final ToggleButton btnNotifycation = (ToggleButton) dialog.findViewById(R.id.btnNotifycation);
+        final Switch btnNotifycation = (Switch) dialog.findViewById(R.id.btnNotifycation);
 
         btnDate = (Button) dialog.findViewById(R.id.btnDate);
         btnTime = (Button) dialog.findViewById(R.id.btnTime);
@@ -349,40 +349,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         openDadabase();
         setEvent_fabButtonClick();
 
-        spType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            public void onItemSelected(AdapterView<?> arg0,View arg1,int arg2,long arg3) {
-
-            }
-
-            public void onNothingSelected(AdapterView<?> arg0) {
-
-            }
-        });
-
         //load currentTime for value of spiner
         Calendar currentTime = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String date = dateFormat.format(currentTime.getTime());
-        valueOfSpiner.setText(date);
 
-
-        valueOfSpiner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar newCalendar = Calendar.getInstance();
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
-
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        dateSelected.set(year, monthOfYear, dayOfMonth, 0, 0);
-
-                        valueOfSpiner.setText(dateFormatter.format(dateSelected.getTime()));
-                    }
-
-                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
-            }
-        });
     }
 
     void slideToRemoveTask(){
@@ -423,20 +394,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void addControls() {
 
-        valueOfSpiner = (TextView) findViewById(R.id.textValueSp);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        spType = (Spinner) findViewById(R.id.spType);
-        ArrayList<String> spList = new ArrayList<String>();
-        spList.add("Ngày");
-        spList.add("Tuần");
-        spList.add("Tháng");
-        spList.add("Năm");
-
-        ArrayAdapter<String> spTypeAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_spinner_dropdown_item,spList);
-        spTypeAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        spType.setAdapter(spTypeAdapter);
-        spTypeAdapter.notifyDataSetChanged();
-
 
         rcvTask = (RecyclerView) findViewById(R.id.rcvTask);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
@@ -449,6 +407,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rcvTask.setAdapter(taskAdapter);
 
     }
+
+
 
     private void xulySaoChepCSDLtuAsset() {
         File dbFile = getDatabasePath(DATABASE_NAME);

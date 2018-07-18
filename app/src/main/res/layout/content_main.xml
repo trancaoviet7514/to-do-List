@@ -21,41 +21,69 @@
         android:layout_height="wrap_content"
         android:id="@+id/txtFilter"
         android:textSize="20dp"/>
-    <Spinner
+
+    <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:id="@+id/spType"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
-        android:paddingTop="0dp"
-        android:paddingRight="0dp"/>
+        android:id="@+id/rgViewMode"
+        android:orientation="horizontal">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rdOneDay"
+            android:text="Trong ngày"
+            android:layout_marginRight="10dp"
+            android:checked="true"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rdSomeDay"
+            android:text="Nhiều ngày"/>
+    </RadioGroup>
 
     <TextView
         android:text="Danh sách công việc:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spType"
+        android:layout_below="@id/rgViewMode"
         android:id="@+id/textView"
+        android:textSize="15dp"/>
+
+    <TextView
+        android:text="25/06/2018"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rgViewMode"
+        android:id="@+id/txtDateStart"
+        android:layout_toLeftOf="@id/txtDeviderCharacter_DateStart_DateEnd"
+        android:visibility="invisible"
         />
+    <TextView
+        android:text="---"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rgViewMode"
+        android:id="@+id/txtDeviderCharacter_DateStart_DateEnd"
+        android:layout_toLeftOf="@id/txtDateEnd"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:visibility="invisible"/>
 
     <TextView
         android:text="25/06/2018"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/spType"
-        android:id="@+id/textValueSp"
-        />
+        android:layout_below="@id/rgViewMode"
+        android:id="@+id/txtDateEnd"/>
 
     <TextView
-
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/textView"
         android:id="@+id/textView2"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorAccent"
         />
 
     <android.support.v7.widget.RecyclerView

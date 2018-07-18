@@ -14,11 +14,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thêm công việc"
+        android:text="Thêm ghi chú"
         android:id="@+id/textViewAddTask"
         android:gravity="center"
         android:textSize="20dp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/colorAccent"/>
 
 
     <EditText
@@ -30,7 +30,7 @@
         android:layout_weight="0.13"
 
         android:gravity="top|left"
-        android:hint="Nội dung công việc"
+        android:hint="Nội dung"
         android:inputType="textMultiLine"
         android:lines="3"
         android:maxLines="10"
@@ -41,12 +41,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/edtTaskTitle"
         android:layout_below="@+id/edtTaskContent"
         android:layout_marginTop="10dp"
         android:text="Ngày:"
         android:textSize="15dp"
-        android:id="@+id/textViewNgay"/>
+        android:id="@+id/textViewNgay"
+        android:textColor="#000000"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
         android:text="02/10/2018"
         android:id="@+id/btnDate"
         android:background="@null"
-        />
+        android:textAlignment="textEnd"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -65,7 +65,8 @@
         android:layout_below="@+id/btnDate"
         android:text="23:59"
         android:id="@+id/btnTime"
-        android:background="@null"/>
+        android:background="@null"
+        android:textAlignment="textEnd"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,7 +75,8 @@
         android:layout_marginTop="20dp"
         android:text="Giờ:"
         android:textSize="15dp"
-        android:id="@+id/textViewGio"/>
+        android:id="@+id/textViewGio"
+        android:textColor="#000000"/>
 
     <TextView
         android:id="@+id/textviewBaoNhac"
@@ -83,16 +85,18 @@
         android:layout_below="@id/textViewGio"
         android:layout_marginTop="30dp"
         android:text="Báo nhắc:"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:textColor="#000000"/>
 
-    <ToggleButton
+    <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/btnTime"
         android:id="@+id/btnNotifycation"
-        android:checked="false"/>
+        android:checked="false"
+        android:textColorHighlight="@color/colorPrimary"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,8 +106,8 @@
         android:layout_marginTop="20dp"
         android:id="@+id/btnCancel"
         android:background="@null"
-
-        />
+        android:textColor="@color/colorAccent"
+        android:textAlignment="textEnd"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -113,5 +117,6 @@
         android:layout_marginTop="20dp"
         android:id="@+id/btnSave"
         android:background="@null"
-        />
+        android:textColor="@color/colorAccent"
+        android:textAlignment="textEnd"/>
 </RelativeLayout>
