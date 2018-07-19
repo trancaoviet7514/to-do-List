@@ -1,30 +1,32 @@
 package com.example.trancaoviet.myhelper;
 
+import java.sql.Time;
+import java.util.Date;
+
 public class Task {
 
-    boolean Complete;
-    int Id;
-    String Content;
-    String Date;
-    String Time;
-    String Notifycation;
+    private int Id;
+    private String Content;
+    private Date date;
+    private Time time;
+    private boolean isComplete;
+    private boolean hasNotifycation;
 
-    public Task(int id,  String content, String date, String time, String notifycation , boolean complete) {
-
-        Complete = complete;
+    public Task(int id, String content, Date date, Time time, boolean isComplete, boolean hasNotifycation) {
         Id = id;
         Content = content;
-        Date = date;
-        Time = time;
-        Notifycation = notifycation;
+        this.date = date;
+        this.time = time;
+        this.isComplete = isComplete;
+        this.hasNotifycation = hasNotifycation;
     }
 
-    public boolean isComplete() {
-        return Complete;
-    }
-
-    public void setComplete(boolean complete) {
-        Complete = complete;
+    public Task(String content, Date date, Time time, boolean isComplete, boolean hasNotifycation) {
+        Content = content;
+        this.date = date;
+        this.time = time;
+        this.isComplete = isComplete;
+        this.hasNotifycation = hasNotifycation;
     }
 
     public int getId() {
@@ -35,58 +37,43 @@ public class Task {
         Id = id;
     }
 
-    public Task(String content, String date, String time, String notifycation, boolean complete) {
-
-        Content = content;
-        Date = date;
-        Time = time;
-        Notifycation = notifycation;
-        Complete = complete;
-    }
-
-    public Task( String Title, String content, String date, String time) {
-
-        Content = content;
-        Date = date;
-        Time = time;
-
-    }
-
-    public Task() {
-
+    public String getContent() {
+        return Content;
     }
 
     public void setContent(String content) {
         Content = content;
     }
 
-    public void setDate(String date) {
-        Date = date;
+    public Date getDate() {
+        return date;
     }
 
-    public void setTime(String time) {
-        Time = time;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public void setNotifycation(String notifycation) {
-        Notifycation = notifycation;
+    public Time getTime() {
+        return time;
     }
 
-    public String getContent() {
-        return Content;
+    public void setTime(Time time) {
+        this.time = time;
     }
 
-    public String getDate() {
-        return Date;
+    public boolean isComplete() {
+        return isComplete;
     }
 
-    public String getTime() {
-        return Time;
+    public void setComplete(boolean complete) {
+        isComplete = complete;
     }
 
-    public String getNotifycation() {
-        return Notifycation;
+    public boolean isHasNotifycation() {
+        return hasNotifycation;
     }
 
-
+    public void setHasNotifycation(boolean hasNotifycation) {
+        this.hasNotifycation = hasNotifycation;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.trancaoviet.myhelper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
 
@@ -50,14 +50,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                 public void onClick(View view) {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put("Id",selectedTask.getId());
-                    contentValues.put("Date",selectedTask.getDate());
-                    contentValues.put("Time",selectedTask.getTime());
-                    contentValues.put("Notifycation",selectedTask.getNotifycation());
+                    contentValues.put("Date",selectedTask.getDate().toString());
+                    contentValues.put("Time",selectedTask.getTime().toString());
+                    contentValues.put("Notifycation",selectedTask.isHasNotifycation());
 
-                    if(selectedTask.Complete){
+                    if(selectedTask.isComplete()){
                         btnComplete.setImageResource(R.drawable.uncomplete);
                         contentValues.put("Complete",0);
-                        int i = MainActivity.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
+                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
                         if(i!= 0){
                             Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
                         }
@@ -69,7 +69,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                     else{
                         btnComplete.setImageResource(R.drawable.complete);
                         contentValues.put("Complete",1);
-                        int i = MainActivity.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
+                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
                         if(i!= 0){
                             Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
                         }
@@ -84,7 +84,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MainActivity.database.delete("tbTask","id = ?",new String[]{String.valueOf(selectedTask.getId())});
+                    Provider.database.delete("tbTask","id = ?",new String[]{String.valueOf(selectedTask.getId())});
                     TaskAdapter.this.notifyItemRemoved(position);
                     MainActivity.TaskList.remove(position);
                     TaskAdapter.this.notifyItemRangeChanged(position,TaskList.size()+1);
@@ -95,33 +95,37 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                 public void onClick(View view) {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put("Id",selectedTask.getId());
-                    contentValues.put("Date",selectedTask.getDate());
-                    contentValues.put("Time",selectedTask.getTime());
+                    contentValues.put("Date",selectedTask.getDate().toString());
+                    contentValues.put("Time",selectedTask.getTime().toString());
                     contentValues.put("Complete",String.valueOf(selectedTask.isComplete()));
 
-                    if(selectedTask.getNotifycation().equals("false")){
+                    if(selectedTask.isHasNotifycation()){
                         btnNotyfication.setImageResource(R.drawable.notification);
                         contentValues.put("Notifycation","true");
-                        int i = MainActivity.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
+                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
                         if(i!= 0){
-                            Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
                         }
-                        MainActivity.TaskList.get(position).setNotifycation("true");
+                        MainActivity.TaskList.get(position).setHasNotifycation(true);
+                        NotifycationService.TaskList.add(selectedTask);
+                        Intent intent = new Intent(mContext,NotifycationService.class);
+                        mContext.startService(intent);
                     }
                     else{
                         btnNotyfication.setImageResource(R.drawable.unnotification);
                         contentValues.put("Notifycation","false");
-                        int i = MainActivity.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
+                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
                         if(i!= 0){
-                            Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
                         }
-                        MainActivity.TaskList.get(position).setNotifycation("false");
+                        MainActivity.TaskList.get(position).setHasNotifycation(false);
+                        NotifycationService.TaskList.remove(selectedTask);
                     }
                 }
             });
@@ -144,8 +148,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         Task task = TaskList.get(position);
         holder.selectedTask = task;
         holder.position = position;
-        holder.TaskDate.setText(task.getDate());
-        holder.TaskTime.setText(task.getTime());
+        holder.TaskDate.setText(task.getDate().toString());
+        holder.TaskTime.setText(task.getTime().toString());
         holder.TaskContent.setText(task.getContent());
 
         if(task.isComplete()){
@@ -154,7 +158,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         else{
             holder.btnComplete.setImageResource(R.drawable.uncomplete);
         }
-        if(task.getNotifycation().equals("false")){
+        if(task.isHasNotifycation()){
             holder.btnNotyfication.setImageResource(R.drawable.unnotification);
         }
         else{

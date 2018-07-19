@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -51,15 +52,15 @@ public class NotifycationService extends Service {
                 NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                 Calendar currentTime = Calendar.getInstance();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                String Date = dateFormat.format(currentTime.getTime());
-                String Time = timeFormat.format(currentTime.getTime());
+                Date date = currentTime.getTime();
+                Time time = new Time(date.getTime());
 
-                for(int i = 0; i < TaskList.size();i++){
-                    String temp = TaskList.get(i).getDate();
-                    if(temp.equals(Date)){
-                        if(TaskList.get(i).getTime().compareTo(Time) < 0){
+                for(int i = 0; i < TaskList.size();i++) {
+
+                    if(TaskList.get(i).getDate().compareTo(date) < 0) {
+
+                        if(TaskList.get(i).getTime().compareTo(time) < 0) {
+
                             Intent resultIntent = new Intent(NotifycationService.this, MainActivity.class);
                             PendingIntent resultPendingIntent =
                                     PendingIntent.getActivity(
@@ -80,11 +81,12 @@ public class NotifycationService extends Service {
                             // Vibrate for 500 milliseconds
                             if (Build.VERSION.SDK_INT >= 26) {
                                 //v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
-                            }else{
+                            } else {
                                 //deprecated in API 26
                                 v.vibrate(500);
                             }
                             TaskList.remove(i);
+
                             //rung va chuong
                         }
                     }
