@@ -41,6 +41,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView txtDateStart,txtDateEnd,txtDateDevider;
     RadioButton rdOneDayMode, rdSomeDayMode;
+    RadioGroup rgViewMode;
 
     Calendar dateSelected = Calendar.getInstance(); // use for storge data seleted in dialog add task
     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -267,6 +269,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 String TaskContent = edtTaskContent.getText().toString();
+                if(TaskContent.equals("")){
+                    TaskContent = "[Không có nội dung]";
+                }
                 String Date = btnDate.getText().toString();
                 String Time = btnTime.getText().toString();
                 boolean Notifycation = btnNotifycation.isChecked();
@@ -347,20 +352,95 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         taskAdapter.notifyDataSetChanged();
     }
+    //---------------------------------
 
-    private void addEvents() {
-        slideToRemoveTask();
-        openDadabase();
-        setEvent_fabButtonClick();
+    private void addControls() {
 
-        //load currentTime for value of spiner
-        Calendar currentTime = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String date = dateFormat.format(currentTime.getTime());
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        rcvTask = (RecyclerView) findViewById(R.id.rcvTask);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,linearLayoutManager.getOrientation());
+        rcvTask.addItemDecoration(dividerItemDecoration);
+        rcvTask.setLayoutManager(linearLayoutManager);
+
+        TaskList = new ArrayList<Task>();
+        taskAdapter = new TaskAdapter(TaskList,MainActivity.this);
+        rcvTask.setAdapter(taskAdapter);
+
+        txtDateStart = (TextView) findViewById(R.id.txtDateStart);
+        txtDateDevider = (TextView) findViewById(R.id.txtDeviderCharacter_DateStart_DateEnd);
+        txtDateEnd = (TextView) findViewById(R.id.txtDateEnd);
+
+        rgViewMode = (RadioGroup) findViewById(R.id.rgViewMode);
+        rdOneDayMode = (RadioButton) findViewById(R.id.rdOneDay);
+        rdSomeDayMode = (RadioButton) findViewById(R.id.rdSomeDay);
     }
 
-    void slideToRemoveTask(){
+    private void addEvents() {
+        openDadabase();
+        setEvent_fabButtonClick();
+        slideToRemoveTask();
+        loadCurrentDateforTxtDateEnd();
+        setEvent_radioButtonSelected();
+        setEvent_txtDateClick();
+    }
+
+    private void setEvent_txtDateClick() {
+        txtDateEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar newCalendar = Calendar.getInstance();
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        dateSelected.set(year, monthOfYear, dayOfMonth, 0, 0);
+
+                        txtDateEnd.setText(dateFormatter.format(dateSelected.getTime()));
+                    }
+
+                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+        txtDateStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar newCalendar = Calendar.getInstance();
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        dateSelected.set(year, monthOfYear, dayOfMonth, 0, 0);
+
+                        txtDateStart.setText(dateFormatter.format(dateSelected.getTime()));
+                    }
+
+                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+    }
+    private void setEvent_radioButtonSelected() {
+        rgViewMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if(rdOneDayMode.isChecked()){
+                    txtDateDevider.setVisibility(View.INVISIBLE);
+                    txtDateStart.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    txtDateStart.setVisibility(View.VISIBLE);
+                    txtDateDevider.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+    private void loadCurrentDateforTxtDateEnd(){
+        Calendar currentTime = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        txtDateEnd.setText(dateFormat.format(currentTime.getTime()));
+    }
+    private void slideToRemoveTask(){
         ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -380,10 +460,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         swipeToDismissTouchHelper.attachToRecyclerView(rcvTask);
     }
-    void openDadabase(){
+    private void openDadabase(){
         database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
     }
-    void setEvent_fabButtonClick(){
+    private void setEvent_fabButtonClick(){
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -392,26 +472,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
-
-    //---------------------------------
-
-    private void addControls() {
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        rcvTask = (RecyclerView) findViewById(R.id.rcvTask);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,linearLayoutManager.getOrientation());
-        rcvTask.addItemDecoration(dividerItemDecoration);
-        rcvTask.setLayoutManager(linearLayoutManager);
-
-        TaskList = new ArrayList<Task>();
-        taskAdapter = new TaskAdapter(TaskList,MainActivity.this);
-        rcvTask.setAdapter(taskAdapter);
-
-    }
-
 
 
     private void xulySaoChepCSDLtuAsset() {
