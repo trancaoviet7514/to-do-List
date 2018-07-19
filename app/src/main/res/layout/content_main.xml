@@ -20,14 +20,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtFilter"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:textColor="#000000"/>
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:id="@+id/rgViewMode"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:textColor="#000000">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rgViewMode"
         android:id="@+id/textView"
-        android:textSize="15dp"/>
+        android:textSize="15dp"
+        android:textColor="#000000"/>
 
     <TextView
         android:text="25/06/2018"
@@ -58,7 +61,7 @@
         android:id="@+id/txtDateStart"
         android:layout_toLeftOf="@id/txtDeviderCharacter_DateStart_DateEnd"
         android:visibility="invisible"
-        />
+        android:textColor="#000000"/>
     <TextView
         android:text="---"
         android:layout_width="wrap_content"
@@ -68,7 +71,8 @@
         android:layout_toLeftOf="@id/txtDateEnd"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:textColor="#000000"/>
 
     <TextView
         android:text="25/06/2018"
@@ -76,7 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/rgViewMode"
-        android:id="@+id/txtDateEnd"/>
+        android:id="@+id/txtDateEnd"
+        android:textColor="#000000"/>
 
     <TextView
         android:layout_width="match_parent"

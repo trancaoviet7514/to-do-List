@@ -40,6 +40,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -68,13 +69,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String DB_PATH_SUFFIX = "/databases/";
     static SQLiteDatabase database=null;
 
+    //Some control in MainActivity
+
     public static RecyclerView rcvTask;
     public static ArrayList<Task> TaskList;
     public static TaskAdapter taskAdapter;
-    Spinner spType;
 
     FloatingActionButton fab;
-    TextView valueOfSpiner;
+
+    TextView txtDateStart,txtDateEnd,txtDateDevider;
+    RadioButton rdOneDayMode, rdSomeDayMode;
+
     Calendar dateSelected = Calendar.getInstance(); // use for storge data seleted in dialog add task
     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
     SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
@@ -294,11 +299,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-    ArrayList<Task> getTaskList(String tableName,String[] SelectColumn,String whereClause,String[] selectionArg,String having,String groupBy,String orderBy){
+    private ArrayList<Task> getTaskList(String tableName,String[] SelectColumn,String whereClause,String[] selectionArg,String having,String groupBy,String orderBy){
+
         ArrayList<Task> result = new ArrayList<Task>();
-
         Cursor cursor=database.query(tableName,SelectColumn,whereClause,selectionArg,null,null,orderBy);
-
 
         while (cursor.moveToNext())
         {
