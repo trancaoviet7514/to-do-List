@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
@@ -148,8 +149,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         Task task = TaskList.get(position);
         holder.selectedTask = task;
         holder.position = position;
-        holder.TaskDate.setText(task.getDate().toString());
-        holder.TaskTime.setText(task.getTime().toString());
+        holder.TaskDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
+        holder.TaskTime.setText(new SimpleDateFormat("hh:mm").format(task.getTime()));
         holder.TaskContent.setText(task.getContent());
 
         if(task.isComplete()){

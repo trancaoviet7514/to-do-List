@@ -99,10 +99,11 @@ public class Provider {
             Date date = null;
             Time time = null;
             try {
+                String dddd = cursor.getString(ColumnIndex_Date);
                 date = new SimpleDateFormat("dd/MM/yyyy").parse(cursor.getString(ColumnIndex_Date));
 
-                Date date_time = new SimpleDateFormat("dd/MM/yyyy").parse(cursor.getString(ColumnIndex_Time));
-                Time Time = new Time(date_time.getTime());
+                Date date_time = new SimpleDateFormat("HH:mm").parse(cursor.getString(ColumnIndex_Time));
+                time = new Time(date_time.getTime());
 
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -123,18 +124,14 @@ public class Provider {
 
         result.addAll(query("tbTask",null,null,null,null,null,"Date,Time"));
         Task task;
-        for(int i = 0; i < result.size();i++){
-            task = result.get(i);
-            try {
-                Date taskDate = new SimpleDateFormat("dd/MM/yyyy").parse(task.getDate().toString());
-                if(taskDate.compareTo(dateStart)<0 ||(taskDate.compareTo(dateEnd)>0)){
-                    result.remove(i);
-                    i--;
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
+        for ( int i = 0; i < result.size(); i++) {
+
+            task = result.get(i);
+            if ( task.getDate().compareTo(dateStart) < 0 ||  task.getDate().compareTo(dateEnd) > 0 ) {
+                result.remove(i);
+                i--;
+            }
         }
 
         return result;
@@ -170,7 +167,7 @@ public class Provider {
     public long insertTask(Task task){
         ContentValues contentValues = new ContentValues();
         contentValues.put("Content", task.getContent());
-        contentValues.put("Date", task.getDate().toString());
+        contentValues.put("Date", new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
         contentValues.put("Time", task.getTime().toString());
         contentValues.put("Notifycation", task.isHasNotifycation());
         contentValues.put("Complete",0);

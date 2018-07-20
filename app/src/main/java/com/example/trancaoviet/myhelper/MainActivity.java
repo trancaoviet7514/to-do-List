@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         btnTime.setOnClickListener(new View.OnClickListener() {
             Calendar dateSelected = Calendar.getInstance(); // use for storge data seleted in dialog add task
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
+            SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
             @Override
             public void onClick(View view) {
                 Calendar mcurrentTime = Calendar.getInstance();
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 try {
                     date = new SimpleDateFormat("dd/MM/yyyy").parse(btnDate.getText().toString());
 
-                    Date date_time = new SimpleDateFormat("hh:mm").parse(btnDate.getText().toString());
+                    Date date_time = new SimpleDateFormat("HH:mm").parse(btnTime.getText().toString());
                     time= new Time(date_time.getTime());
 
                 } catch (ParseException e) {
@@ -300,14 +300,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 long i = taskProvider.insertTask(newTask);
 
-                if(i!=-1){
+                if( i != -1 ) {
                     //Toast.makeText(MainActivity.this,"Insert sucessful",Toast.LENGTH_SHORT).show();
                     showTask();
                     edtTaskContent.setText("");
 
                 }
 
-                if(newTask.isHasNotifycation()){
+                if( newTask.isHasNotifycation() ) {
                     NotifycationService.TaskList.add(newTask);
                     Intent intent = new Intent(MainActivity.this,NotifycationService.class);
                     startService(intent);
