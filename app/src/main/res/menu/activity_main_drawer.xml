@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_UpcomingTask"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/upcomming"
             android:title="Upcoming Tast" />
         <item
             android:id="@+id/nav_CompleteTask"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/complete"
             android:title="Completed Task" />
         <item
             android:id="@+id/nav_UncompleteTask"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/x_button"
             android:title="Uncompleted task" />
+
+    </group>
+
+    <group android:checkableBehavior="none">
+        <item
+
+            android:icon="@drawable/language"
+            android:title="Ngôn ngữ" />
+        <item
+
+            android:icon="@drawable/theme"
+            android:title="Màu nền" />
+        <item
+
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Đăng xuất" />
 
     </group>
 

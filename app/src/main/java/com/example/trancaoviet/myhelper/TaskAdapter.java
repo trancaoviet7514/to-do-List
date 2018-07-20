@@ -49,44 +49,30 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnComplete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("Id",selectedTask.getId());
-                    contentValues.put("Date",selectedTask.getDate().toString());
-                    contentValues.put("Time",selectedTask.getTime().toString());
-                    contentValues.put("Notifycation",selectedTask.isHasNotifycation());
+                    Task updateTask = new Task(selectedTask.getContent(),selectedTask.getDate(),selectedTask.getTime(),selectedTask.isComplete(),selectedTask.isHasNotifycation());
 
                     if(selectedTask.isComplete()){
                         btnComplete.setImageResource(R.drawable.uncomplete);
-                        contentValues.put("Complete",0);
-                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
-                        if(i!= 0){
-                            Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
-                        }
+                        updateTask.setComplete(false);
                         MainActivity.TaskList.get(position).setComplete(false);
                     }
                     else{
                         btnComplete.setImageResource(R.drawable.complete);
-                        contentValues.put("Complete",1);
-                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
-                        if(i!= 0){
-                            Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
-                        }
+                        updateTask.setComplete(true);
                         MainActivity.TaskList.get(position).setComplete(true);
                     }
+
+                    Provider.updateTask(selectedTask.getId(),updateTask);
+
                 }
             });
 
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Provider.database.delete("tbTask","id = ?",new String[]{String.valueOf(selectedTask.getId())});
+                    Provider.deleteTask(selectedTask.getId());
                     TaskAdapter.this.notifyItemRemoved(position);
+
                     MainActivity.TaskList.remove(position);
                     TaskAdapter.this.notifyItemRangeChanged(position,TaskList.size()+1);
                 }
@@ -94,40 +80,30 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnNotyfication.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("Id",selectedTask.getId());
-                    contentValues.put("Date",selectedTask.getDate().toString());
-                    contentValues.put("Time",selectedTask.getTime().toString());
-                    contentValues.put("Complete",String.valueOf(selectedTask.isComplete()));
+                    Task updateTask = new Task(selectedTask.getContent(),selectedTask.getDate(),selectedTask.getTime(),selectedTask.isComplete(),selectedTask.isHasNotifycation());
 
-                    if(selectedTask.isHasNotifycation()){
+                    if(!selectedTask.isHasNotifycation()){
+
                         btnNotyfication.setImageResource(R.drawable.notification);
-                        contentValues.put("Notifycation","true");
-                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
-                        if(i!= 0){
-                            //Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            //Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
-                        }
+                        updateTask.setHasNotifycation(true);
+
                         MainActivity.TaskList.get(position).setHasNotifycation(true);
+
                         NotifycationService.TaskList.add(selectedTask);
                         Intent intent = new Intent(mContext,NotifycationService.class);
                         mContext.startService(intent);
                     }
                     else{
                         btnNotyfication.setImageResource(R.drawable.unnotification);
-                        contentValues.put("Notifycation","false");
-                        int i = Provider.database.update("tbTask",contentValues,"id = ?", new String[]{String.valueOf(selectedTask.getId())});
-                        if(i!= 0){
-                            //Toast.makeText(mContext,"Update successful",Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            //Toast.makeText(mContext,"Update fault",Toast.LENGTH_SHORT).show();
-                        }
+                        updateTask.setHasNotifycation(false);
+
                         MainActivity.TaskList.get(position).setHasNotifycation(false);
+
                         NotifycationService.TaskList.remove(selectedTask);
                     }
+
+                    Provider.updateTask(selectedTask.getId(),updateTask);
+
                 }
             });
         }
@@ -160,10 +136,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             holder.btnComplete.setImageResource(R.drawable.uncomplete);
         }
         if(task.isHasNotifycation()){
-            holder.btnNotyfication.setImageResource(R.drawable.unnotification);
+            holder.btnNotyfication.setImageResource(R.drawable.notification);
         }
         else{
-            holder.btnNotyfication.setImageResource(R.drawable.notification);
+            holder.btnNotyfication.setImageResource(R.drawable.unnotification);
         }
     }
     @Override

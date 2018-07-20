@@ -113,7 +113,7 @@ public class Provider {
             boolean isComplete =  cursor.getString(ColumnIndex_Complete).equals("1");
 
 
-            result.add(new Task(id,Content,date,time, hasNotifycation,isComplete));
+            result.add(new Task(id,Content,date,time, isComplete,hasNotifycation));
         }
         cursor.close();
         return result;
@@ -169,9 +169,23 @@ public class Provider {
         contentValues.put("Content", task.getContent());
         contentValues.put("Date", new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
         contentValues.put("Time", task.getTime().toString());
-        contentValues.put("Notifycation", task.isHasNotifycation());
-        contentValues.put("Complete",0);
+        contentValues.put("Notifycation", task.isHasNotifycation()?"1":"0");
+        contentValues.put("Complete",task.isComplete()?"1":"0");
         return database.insert("tbTask", null, contentValues);
+    }
+
+    public static long updateTask(int id, Task task){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Content", task.getContent());
+        contentValues.put("Date", new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
+        contentValues.put("Time", task.getTime().toString());
+        contentValues.put("Notifycation", task.isHasNotifycation()?"1":"0");
+        contentValues.put("Complete",task.isComplete()?"1":"0");
+        return database.update("tbTask",contentValues,"id=?",new String[]{String.valueOf(id)});
+    }
+
+    public static void deleteTask(int id){
+        database.delete("tbTask","id=?",new String[]{String.valueOf(id)});
     }
 }
 

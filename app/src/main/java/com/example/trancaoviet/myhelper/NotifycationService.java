@@ -69,25 +69,22 @@ public class NotifycationService extends Service {
                                             resultIntent,
                                             PendingIntent.FLAG_UPDATE_CURRENT
                                     );
-                            Notification.Builder builder = new Notification.Builder(NotifycationService.this.getApplicationContext());
+
                             Uri defaultSoundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notyfication_sound_plucky);
+
+                            Notification.Builder builder = new Notification.Builder(NotifycationService.this.getApplicationContext());
                             builder.setSmallIcon(R.drawable.complete)
                                     .setContentTitle(TaskList.get(i).getContent())
                                     .setContentIntent(resultPendingIntent)
                                     .setSound(defaultSoundUri);
 
                             mNotifyMgr.notify(001,builder.build());
+
                             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            // Vibrate for 500 milliseconds
-                            if (Build.VERSION.SDK_INT >= 26) {
-                                //v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
-                            } else {
-                                //deprecated in API 26
-                                v.vibrate(500);
-                            }
+                            v.vibrate(500);
+
                             TaskList.remove(i);
 
-                            //rung va chuong
                         }
                     }
                 }
