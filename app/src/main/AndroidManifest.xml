@@ -3,6 +3,7 @@
     package="com.example.trancaoviet.myhelper">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +24,11 @@
         <service
             android:name=".NotifycationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".AddTaskActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light.Dialog"
+            ></activity>
     </application>
 
 </manifest>

@@ -1,9 +1,10 @@
 package com.example.trancaoviet.myhelper;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
 
-public class Task {
+public class Task implements Serializable{
 
     private int Id;
     private String Content;

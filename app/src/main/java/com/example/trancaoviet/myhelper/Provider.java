@@ -100,9 +100,9 @@ public class Provider {
             Time time = null;
             try {
                 String dddd = cursor.getString(ColumnIndex_Date);
-                date = new SimpleDateFormat("dd/MM/yyyy").parse(cursor.getString(ColumnIndex_Date));
+                date = Utils.dateFormat.parse(cursor.getString(ColumnIndex_Date));
 
-                Date date_time = new SimpleDateFormat("HH:mm").parse(cursor.getString(ColumnIndex_Time));
+                Date date_time = Utils.timeFormat.parse(cursor.getString(ColumnIndex_Time));
                 time = new Time(date_time.getTime());
 
             } catch (ParseException e) {
@@ -137,55 +137,50 @@ public class Provider {
         return result;
     }
 
-    public ArrayList<Task> getTaskList(Date dateStart, Date dateEnd,boolean isComplete){
+    public ArrayList<Task> getTaskList (Date dateStart, Date dateEnd, boolean isComplete) {
+
         ArrayList<Task> result = new ArrayList<>();
 
-        String Complete = isComplete==true?"1":"0";
-        result.addAll(query("tbTask",null,"Complete = ?",new String[]{Complete},null,null,"Date,Time"));
+        result.addAll(query("tbTask",null,"Complete = ?",new String[]{ isComplete ? "1" : "0" },null,null,"Date, Time"));
         Task task;
-        for(int i = 0; i < result.size();i++){
-            task = result.get(i);
-            try {
-                Date taskDate = new SimpleDateFormat("dd/MM/yyyy").parse(task.getDate().toString());
-                if(taskDate.compareTo(dateStart)<0 ||(taskDate.compareTo(dateEnd)>0)){
-                    result.remove(i);
-                    i--;
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
+        for(int i = 0; i < result.size(); i++) {
+
+            task = result.get(i);
+
+            if ( task.getDate().compareTo(dateStart) < 0 || task.getDate().compareTo(dateEnd) > 0 ) {
+                result.remove(i);
+                i--;
+            }
         }
 
         return result;
     }
 
-    public int deleteTask(String[] id){
-        return database.delete("tbTask","id = ?",id);
-    }
-
     public long insertTask(Task task){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("Content", task.getContent());
-        contentValues.put("Date", new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
-        contentValues.put("Time", task.getTime().toString());
-        contentValues.put("Notifycation", task.isHasNotifycation()?"1":"0");
-        contentValues.put("Complete",task.isComplete()?"1":"0");
+        contentValues.put("Content", task.getContent() );
+        contentValues.put("Date", Utils.dateFormat.format( task.getDate() ) );
+        contentValues.put("Time", task.getTime().toString() );
+        contentValues.put("Notifycation", task.isHasNotifycation() ? "1" : "0" );
+        contentValues.put("Complete",task.isComplete() ? "1" : "0" );
         return database.insert("tbTask", null, contentValues);
     }
 
-    public static long updateTask(int id, Task task){
+    public static long updateTask(int id, Task task) {
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put("Content", task.getContent());
-        contentValues.put("Date", new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
+        contentValues.put("Content", task.getContent() );
+        contentValues.put("Date", Utils.dateFormat.format( task.getDate() ) );
         contentValues.put("Time", task.getTime().toString());
-        contentValues.put("Notifycation", task.isHasNotifycation()?"1":"0");
-        contentValues.put("Complete",task.isComplete()?"1":"0");
-        return database.update("tbTask",contentValues,"id=?",new String[]{String.valueOf(id)});
+        contentValues.put("Notifycation", task.isHasNotifycation() ? "1" : "0" );
+        contentValues.put("Complete",task.isComplete()? "1" : "0" );
+
+        return database.update("tbTask",contentValues,"id = ?",new String[]{ String.valueOf(id) });
     }
 
-    public static void deleteTask(int id){
-        database.delete("tbTask","id=?",new String[]{String.valueOf(id)});
+    public static void deleteTask(int id) {
+        database.delete("tbTask","id = ?",new String[]{ String.valueOf(id) });
     }
 }
 

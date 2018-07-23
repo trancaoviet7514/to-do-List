@@ -30,6 +30,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+
         public TextView TaskContent, TaskDate, TaskTime;
         public ImageButton btnComplete, btnDelete, btnNotyfication;
         public Task selectedTask;
@@ -37,6 +38,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
 
         public MyViewHolder(View view) {
             super(view);
+
             TaskContent = (TextView) view.findViewById(R.id.txtTaskContent);
             TaskDate = (TextView) view.findViewById(R.id.txtDate);
             TaskTime = (TextView) view.findViewById(R.id.txtTime);
@@ -44,21 +46,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnDelete = (ImageButton) view.findViewById(R.id.btnDelete);
             btnNotyfication = (ImageButton) view.findViewById(R.id.btnNotyficationInItem);
 
-
-
             btnComplete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Task updateTask = new Task(selectedTask.getContent(),selectedTask.getDate(),selectedTask.getTime(),selectedTask.isComplete(),selectedTask.isHasNotifycation());
 
-                    if(selectedTask.isComplete()){
+                    if( selectedTask.isComplete() ) {
+
                         btnComplete.setImageResource(R.drawable.uncomplete);
+
                         updateTask.setComplete(false);
+
                         MainActivity.TaskList.get(position).setComplete(false);
                     }
-                    else{
+                    else {
                         btnComplete.setImageResource(R.drawable.complete);
+
                         updateTask.setComplete(true);
+
                         MainActivity.TaskList.get(position).setComplete(true);
                     }
 
@@ -70,7 +75,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Provider.deleteTask(selectedTask.getId());
+                    Provider.deleteTask( selectedTask.getId() );
                     TaskAdapter.this.notifyItemRemoved(position);
 
                     MainActivity.TaskList.remove(position);
@@ -80,9 +85,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnNotyfication.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Task updateTask = new Task(selectedTask.getContent(),selectedTask.getDate(),selectedTask.getTime(),selectedTask.isComplete(),selectedTask.isHasNotifycation());
 
-                    if(!selectedTask.isHasNotifycation()){
+                    Task updateTask = new Task(selectedTask.getContent(), selectedTask.getDate(), selectedTask.getTime(), selectedTask.isComplete(), selectedTask.isHasNotifycation() );
+
+                    if( !selectedTask.isHasNotifycation() ) {
 
                         btnNotyfication.setImageResource(R.drawable.notification);
                         updateTask.setHasNotifycation(true);
@@ -93,7 +99,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                         Intent intent = new Intent(mContext,NotifycationService.class);
                         mContext.startService(intent);
                     }
-                    else{
+                    else {
                         btnNotyfication.setImageResource(R.drawable.unnotification);
                         updateTask.setHasNotifycation(false);
 
@@ -102,7 +108,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                         NotifycationService.TaskList.remove(selectedTask);
                     }
 
-                    Provider.updateTask(selectedTask.getId(),updateTask);
+                    Provider.updateTask(selectedTask.getId(), updateTask);
 
                 }
             });
@@ -123,22 +129,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         Task task = TaskList.get(position);
+
         holder.selectedTask = task;
         holder.position = position;
-        holder.TaskDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()));
-        holder.TaskTime.setText(new SimpleDateFormat("hh:mm").format(task.getTime()));
-        holder.TaskContent.setText(task.getContent());
+        holder.TaskDate.setText(Utils.dateFormat.format( task.getDate() ) );
+        holder.TaskTime.setText(Utils.timeFormat.format( task.getTime() ) );
+        holder.TaskContent.setText( task.getContent() );
 
-        if(task.isComplete()){
+        if( task.isComplete() ) {
             holder.btnComplete.setImageResource(R.drawable.complete);
         }
-        else{
+        else {
             holder.btnComplete.setImageResource(R.drawable.uncomplete);
         }
-        if(task.isHasNotifycation()){
+
+        if( task.isHasNotifycation() ) {
             holder.btnNotyfication.setImageResource(R.drawable.notification);
         }
-        else{
+        else {
             holder.btnNotyfication.setImageResource(R.drawable.unnotification);
         }
     }
