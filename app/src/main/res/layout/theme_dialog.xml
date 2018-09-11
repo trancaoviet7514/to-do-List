@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent">
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rgLanguage"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Màu đỏ"
+            android:checked="true"
+            android:id="@+id/Red"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Màu xanh"
+            android:id="@+id/Green"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Màu vàng"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/Yellow"/>
+    </RadioGroup>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:id="@+id/btnOk"
+        android:layout_below="@+id/rgLanguage"
+        android:layout_alignEnd="@+id/rgLanguage"
+        android:layout_margin="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:id="@+id/btnCancel"
+        android:layout_below="@+id/rgLanguage"
+        android:layout_toLeftOf="@+id/btnOk"
+        android:layout_margin="15dp"/>
+</RelativeLayout>

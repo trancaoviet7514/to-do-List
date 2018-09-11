@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -28,7 +30,9 @@ public class AddTaskActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_add_task);
 
         btnDate = (TextView) findViewById(R.id.btnDate);
@@ -117,6 +121,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
                     Date date_time = Utils.timeFormat.parse(btnTime.getText().toString());
                     time= new Time(date_time.getTime());
+                    date.setTime( date_time.getTime() + date.getTime() );
 
                 } catch (ParseException e) {
                     e.printStackTrace();

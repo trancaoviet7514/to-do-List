@@ -67,7 +67,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                         MainActivity.TaskList.get(position).setComplete(true);
                     }
 
-                    Provider.updateTask(selectedTask.getId(),updateTask);
+                    MainActivity.taskProvider.updateTask(selectedTask.getId(),updateTask);
 
                 }
             });
@@ -75,7 +75,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Provider.deleteTask( selectedTask.getId() );
+                    MainActivity.taskProvider.deleteTask( selectedTask.getId() );
                     TaskAdapter.this.notifyItemRemoved(position);
 
                     MainActivity.TaskList.remove(position);
@@ -108,7 +108,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                         NotifycationService.TaskList.remove(selectedTask);
                     }
 
-                    Provider.updateTask(selectedTask.getId(), updateTask);
+                    MainActivity.taskProvider.updateTask(selectedTask.getId(), updateTask);
 
                 }
             });

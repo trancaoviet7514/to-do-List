@@ -16,7 +16,7 @@
     android:weightSum="1">
 
     <TextView
-        android:text="Xem theo:"
+        android:text="@string/view_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtFilter"
@@ -35,14 +35,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/rdOneDay"
-            android:text="Trong ngày"
+            android:text="@string/one_day"
             android:layout_marginRight="10dp"
             android:checked="true"/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/rdSomeDay"
-            android:text="Nhiều ngày"/>
+            android:text="@string/some_day"/>
     </RadioGroup>
 
     <TextView
@@ -55,7 +55,7 @@
         android:textColor="#000000"/>
 
     <TextView
-        android:text="Danh sách công việc:"
+        android:text="@string/task_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtTime"
@@ -109,3 +109,4 @@
         android:layout_below="@id/textView2"
         android:id="@+id/rcvTask" />
 </RelativeLayout>
+

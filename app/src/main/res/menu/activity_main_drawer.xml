@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:itemIconTint="@android:color/black"
+    tools:showInt = "navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/grp2">
         <item
             android:id="@+id/nav_UpcomingTask"
             android:icon="@drawable/upcomming"
-            android:title="Upcoming Tast" />
+            android:title="@string/upcoming_task" />
         <item
             android:id="@+id/nav_CompleteTask"
             android:icon="@drawable/complete"
-            android:title="Completed Task" />
+            android:title="@string/complete_task" />
         <item
             android:id="@+id/nav_UncompleteTask"
             android:icon="@drawable/x_button"
-            android:title="Uncompleted task" />
-
+            android:title="@string/uncomplete_task" />
     </group>
 
     <group android:checkableBehavior="none">
         <item
-
+            android:id="@+id/nav_Language"
             android:icon="@drawable/language"
-            android:title="Ngôn ngữ" />
+            android:title="@string/language" />
         <item
-
+            android:id="@+id/nav_theme"
             android:icon="@drawable/theme"
-            android:title="Màu nền" />
+            android:title="@string/theme" />
         <item
-
+            android:id="@+id/nav_logOut"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Đăng xuất" />
+            android:title="@string/log_out" />
 
     </group>
 

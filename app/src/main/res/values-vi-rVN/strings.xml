@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyHelper</string>
+    <string name="cancel">Hủy</string>
+    <string name="title_activity_login">Đăng nhập</string>
+    <string name="ok">Đồng ý</string>
+    <string name="action_settings">Cài đặt</string>
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng kí</string>
+    <string name="exit">Thoát</string>
+    <string name="user_name">Tên đăng nhập</string>
+    <string name="password">Mật khẩu</string>
+    <string name="add_task">Thêm ghi chú</string>
+    <string name="content">Nội dung</string>
+    <string name="date">Ngày</string>
+    <string name="time">Giờ</string>
+    <string name="notifycation">Thông báo</string>
+    <string name="save">Lưu</string>
+    <string name="upcoming_task">Việc sắp đến</string>
+    <string name="complete_task">Việc đã hoàn thành</string>
+    <string name="uncomplete_task">Việc chưa hoàn thành</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="theme">Giao diện</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="user_really_used">Tên đăng nhập đã tồn tại</string>
+    <string name="register_success">Đăng kí thành công</string>
+    <string name="view_mode">Chế độ xem</string>
+    <string name="task_list">Danh sách công việc</string>
+    <string name="one_day">Một ngày</string>
+    <string name="some_day">Nhiều ngày</string>
+</resources>

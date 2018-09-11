@@ -1,128 +1,81 @@
 package com.example.trancaoviet.myhelper;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Date;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class Provider {
-    String DATABASE_NAME="HelperDB.sqlite";
-    String DB_PATH_SUFFIX = "/databases/";
-    static SQLiteDatabase database=null;
-    Context mContext;
 
+    public static DatabaseReference mDataBase = FirebaseDatabase.getInstance().getReference();
+    private ArrayList<Task> listAllTask = new ArrayList<>();
+    private int maxID;
+    private boolean isSignIn = false;
+    public static String UserName, Password;
 
-    public Provider(Context context) {
-        this.mContext = context;
-        initDataBase();
-        openDadabase();
-    }
+    public Provider() {
 
-    private void initDataBase() {
-        File dbFile = mContext.getDatabasePath(DATABASE_NAME);
-        if (!dbFile.exists())
-        {
-            try
-            {
-                CopyDataBaseFromAsset();
-                //Toast.makeText(mContext, "Copying sucess from Assets folder", Toast.LENGTH_LONG).show();
-            }
-            catch (Exception e)
-            {
-                //Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
-            }
+        if(!isSignIn){
+            UserName = "UN_SIGN_IN";
         }
-    }
 
-    private void openDadabase(){
-        database = mContext.openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
-    }
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-    private void CopyDataBaseFromAsset() {
-        try {
-            InputStream myInput;
-            myInput = mContext.getAssets().open(DATABASE_NAME);
-            String outFileName = getDatabasePath();
-            File f = new File(mContext.getApplicationInfo().dataDir + DB_PATH_SUFFIX);
-            if (!f.exists())
-                f.mkdir();
-
-            OutputStream myOutput = new FileOutputStream(outFileName);
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = myInput.read(buffer)) > 0) {
-                myOutput.write(buffer, 0, length);
+                if ( dataSnapshot == null ) return;
+                maxID = ((Long) dataSnapshot.getValue()).intValue();
             }
 
-            myOutput.flush();
-            myOutput.close();
-            myInput.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-    private String getDatabasePath() {
-        return mContext.getApplicationInfo().dataDir + DB_PATH_SUFFIX+ DATABASE_NAME;
-    }
-
-    private ArrayList<Task> query(String tableName,String[] SelectColumn,String whereClause,String[] selectionArg,String having,String groupBy,String orderBy){
-        ArrayList<Task> result = new ArrayList<Task>();
-        Cursor cursor=database.query(tableName,SelectColumn,whereClause,selectionArg,null,null,orderBy);
-
-        while (cursor.moveToNext())
-        {
-            int ColumnIndex_ID = cursor.getColumnIndex("ID");
-            int ColumnIndex_Content = cursor.getColumnIndex("Content");
-            int ColumnIndex_Date = cursor.getColumnIndex("Date");
-            int ColumnIndex_Time = cursor.getColumnIndex("Time");
-            int ColumnIndex_Notifycation = cursor.getColumnIndex("Notifycation");
-            int ColumnIndex_Complete = cursor.getColumnIndex("Complete");
-
-            int id = cursor.getInt(ColumnIndex_ID);
-            String Content = cursor.getString(ColumnIndex_Content);
-            Date date = null;
-            Time time = null;
-            try {
-                String dddd = cursor.getString(ColumnIndex_Date);
-                date = Utils.dateFormat.parse(cursor.getString(ColumnIndex_Date));
-
-                Date date_time = Utils.timeFormat.parse(cursor.getString(ColumnIndex_Time));
-                time = new Time(date_time.getTime());
-
-            } catch (ParseException e) {
-                e.printStackTrace();
             }
+        };
 
-            boolean hasNotifycation = cursor.getString(ColumnIndex_Notifycation).equals("1");
-            boolean isComplete =  cursor.getString(ColumnIndex_Complete).equals("1");
-
-
-            result.add(new Task(id,Content,date,time, isComplete,hasNotifycation));
-        }
-        cursor.close();
-        return result;
+        mDataBase.child("User").child(UserName).child("MaxID").addValueEventListener(valueEventListener);
+        //mDataBase.child("User").child(UserName).child("TaskList").addValueEventListener(valueEventListener_TaskList);
     }
 
-    public ArrayList<Task> getTaskList(Date dateStart, Date dateEnd){
-        ArrayList<Task> result = new ArrayList<>();
+    public void getAllTask(final TaskChangeCallBack taskChangeCallBack){
 
-        result.addAll(query("tbTask",null,null,null,null,null,"Date,Time"));
+        final ArrayList<Task> result = new ArrayList<>();
+
+            ValueEventListener myValueEventListener = new ValueEventListener(){
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if ( dataSnapshot == null ) return;
+                    //result.clear();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                        DBTask dbTask = child.getValue(DBTask.class);
+                        Task task = new Task(dbTask);
+                        result.add(task);
+                    }
+                    taskChangeCallBack.onFinish(result);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            mDataBase.child("User").child(UserName).child("TaskList").addListenerForSingleValueEvent(myValueEventListener);
+
+    }
+
+    public ArrayList<Task> getTaskList(Date dateStart, Date dateEnd) {
+
+        ArrayList<Task> result =  new ArrayList<>();
+
         Task task;
 
         for ( int i = 0; i < result.size(); i++) {
@@ -137,11 +90,11 @@ public class Provider {
         return result;
     }
 
-    public ArrayList<Task> getTaskList (Date dateStart, Date dateEnd, boolean isComplete) {
+    public void getTaskList (Date dateStart, Date dateEnd, boolean isComplete) {
 
         ArrayList<Task> result = new ArrayList<>();
 
-        result.addAll(query("tbTask",null,"Complete = ?",new String[]{ isComplete ? "1" : "0" },null,null,"Date, Time"));
+
         Task task;
 
         for(int i = 0; i < result.size(); i++) {
@@ -154,33 +107,39 @@ public class Provider {
             }
         }
 
-        return result;
+
     }
 
-    public long insertTask(Task task){
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Content", task.getContent() );
-        contentValues.put("Date", Utils.dateFormat.format( task.getDate() ) );
-        contentValues.put("Time", task.getTime().toString() );
-        contentValues.put("Notifycation", task.isHasNotifycation() ? "1" : "0" );
-        contentValues.put("Complete",task.isComplete() ? "1" : "0" );
-        return database.insert("tbTask", null, contentValues);
+    public void insertTask(Task task) {
+
+        task.setId(maxID);
+
+        DBTask dbTask = new DBTask ( task );
+        mDataBase.child("User").child(UserName).child("TaskList").child ( String.valueOf ( maxID ) ).setValue ( dbTask );
+
+        mDataBase.child("User").child(UserName).child("MaxID").setValue(new Integer ( ++maxID ) );
+
     }
 
-    public static long updateTask(int id, Task task) {
+    public boolean updateTask(int id, Task task) {
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Content", task.getContent() );
-        contentValues.put("Date", Utils.dateFormat.format( task.getDate() ) );
-        contentValues.put("Time", task.getTime().toString());
-        contentValues.put("Notifycation", task.isHasNotifycation() ? "1" : "0" );
-        contentValues.put("Complete",task.isComplete()? "1" : "0" );
+        DBTask dbTask = new DBTask(task);
+        mDataBase.child("User").child(UserName).child("TaskList").child( String.valueOf(id) ).setValue(dbTask);
 
-        return database.update("tbTask",contentValues,"id = ?",new String[]{ String.valueOf(id) });
+        return true;
+
     }
 
-    public static void deleteTask(int id) {
-        database.delete("tbTask","id = ?",new String[]{ String.valueOf(id) });
+    public boolean deleteTask(int id) {
+
+        mDataBase.child("User").child(UserName).child("TaskList").child( String.valueOf(id) ).removeValue();
+
+        return true;
+
+    }
+
+    interface TaskChangeCallBack {
+        void onFinish(ArrayList<Task> listTask);
     }
 }
 

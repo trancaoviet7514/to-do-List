@@ -2,8 +2,9 @@ package com.example.trancaoviet.myhelper;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DividerItemDecoration;
@@ -19,44 +20,45 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
-import java.sql.Time;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Provider taskProvider;
-
-    //Some control in MainActivity
+    public static Provider taskProvider;
+    public static boolean isLogin = false;
 
     public static RecyclerView rcvTask;
     public static ArrayList<Task> TaskList;
     public static TaskAdapter taskAdapter;
 
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
-    TextView txtDateStart,txtDateEnd,txtDateDevider;
-    RadioButton rdOneDayMode, rdSomeDayMode;
-    RadioGroup rgViewMode;
+    private TextView txtDateStart,txtDateEnd,txtDateDevider, txtUserName;
+    private RadioButton rdOneDayMode, rdSomeDayMode;
+    private RadioGroup rgViewMode;
+
+    Date dateStart = null;
+    Date dateEnd = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(!isLogin){
+            Provider.UserName = "LOCAL_USER";
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -68,12 +70,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
+        txtUserName = navigationView.getHeaderView(0).findViewById(R.id.txtUserName_nav);
 
-        taskProvider = new Provider(MainActivity.this);
+        taskProvider = new Provider();
+
 
         addControls();
         addEvents();
 
+        txtUserName.setText(Provider.UserName);
         showTask();
     }
 
@@ -115,24 +121,142 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_UpcomingTask) {
+
             showUpCommingTask();
+
         } else if (id == R.id.nav_CompleteTask) {
+
             showTaskCompelte();
 
         } else if (id == R.id.nav_UncompleteTask) {
+
             showTaskUnCompelte();
+
+        } else if (id == R.id.nav_Language) {
+
+            final Dialog ThemeDialog = new Dialog(this);
+            ThemeDialog.setContentView(R.layout.language_dialog);
+            TextView btnSubmit, btnCancel;
+            RadioGroup rgLanguage;
+            rgLanguage = ThemeDialog.findViewById(R.id.rgLanguage);
+            btnSubmit = ThemeDialog.findViewById(R.id.btnOk);
+            btnCancel = ThemeDialog.findViewById(R.id.btnCancel);
+            final String[] languageChoose = new String[1];
+            languageChoose[0] = "en-US";
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    restartInLocale(new Locale(languageChoose[0]));
+                    ThemeDialog.dismiss();
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ThemeDialog.dismiss();
+                }
+            });
+
+            rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    switch (i){
+                        case R.id.english:
+                            languageChoose[0] = "en-US";
+                            break;
+                        case R.id.vietnamese:
+                            languageChoose[0] = "vi-VN";
+                            break;
+                    }
+                }
+            });
+            ThemeDialog.show();
+
+        } else if (id == R.id.nav_theme) {
+
+            final Dialog ThemeDialog = new Dialog(this);
+            ThemeDialog.setContentView(R.layout.theme_dialog);
+            TextView btnSubmit, btnCancel;
+            RadioGroup rgColor;
+            rgColor = ThemeDialog.findViewById(R.id.rgLanguage);
+            btnSubmit = ThemeDialog.findViewById(R.id.btnOk);
+            btnCancel = ThemeDialog.findViewById(R.id.btnCancel);
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    ThemeDialog.dismiss();
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ThemeDialog.dismiss();
+                }
+            });
+
+            rgColor.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    switch (i){
+                        case R.id.Red:
+                           // themeColor = getResources().getColor(R.color.colorAccent);
+                            break;
+                        case R.id.Green:
+                           // themeColor = getResources().getColor(R.color.colorPrimary);
+                            break;
+                        case R.id.Yellow:
+                           // themeColor = getResources().getColor(R.color.colorAccent);
+                            break;
+                    }
+                }
+            });
+            ThemeDialog.show();
+
+
+        } else if (id == R.id.nav_logOut) {
+
+            startActivity(new Intent (this, LoginActivity.class));
+
         }
-//
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void showUpCommingTask() {
+    private void showTask() {
 
-        Date dateStart = null;
-        Date dateEnd = null;
+        try {
+            dateStart = Utils.dateFormat.parse(txtDateStart.getText().toString());
+            dateEnd = Utils.dateFormat.parse(txtDateEnd.getText().toString());
+            dateEnd.setTime(dateEnd.getTime()+ 24 * 60 * 60 *1000);
+        } catch (ParseException e) {    e.printStackTrace();    }
+
+        TaskList.clear();
+        taskProvider.getAllTask(new Provider.TaskChangeCallBack() {
+            @Override
+            public void onFinish(ArrayList<Task> listTask) {
+
+                Task task;
+                for ( int i = 0; i < listTask.size(); i++) {
+
+                    task = listTask.get(i);
+                    if ( task.getDate().compareTo(dateStart) < 0 ||  task.getDate().compareTo(dateEnd) > 0 ) {
+                        listTask.remove(i);
+                        i--;
+                    }
+                }
+                TaskList.addAll(listTask);
+                taskAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void showUpCommingTask() {
 
         try {
             dateStart = Calendar.getInstance().getTime();
@@ -141,58 +265,83 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
         TaskList.clear();
-        TaskList.addAll(taskProvider.getTaskList(dateStart,dateEnd));
+        taskProvider.getAllTask(new Provider.TaskChangeCallBack() {
+            @Override
+            public void onFinish(ArrayList<Task> listTask) {
 
-        taskAdapter.notifyDataSetChanged();
-    }
+                Task task;
+                for ( int i = 0; i < listTask.size(); i++) {
 
-    private void showTask() {
-
-        Date dateStart = null;
-        Date dateEnd = null;
-        try {
-            dateStart = Utils.dateFormat.parse(txtDateStart.getText().toString());
-            dateEnd = Utils.dateFormat.parse(txtDateEnd.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        TaskList.clear();
-        TaskList.addAll(taskProvider.getTaskList(dateStart,dateEnd));
-
-        taskAdapter.notifyDataSetChanged();
+                    task = listTask.get(i);
+                    if ( task.getDate().compareTo(dateStart) < 0 ||  task.getDate().compareTo(dateEnd) > 0 ) {
+                        listTask.remove(i);
+                        i--;
+                    }
+                }
+                TaskList.addAll(listTask);
+                taskAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void showTaskUnCompelte() {
 
-        Date dateStart = null;
-        Date dateEnd = null;
         try {
             dateStart = Utils.dateFormat.parse(txtDateStart.getText().toString());
             dateEnd = Utils.dateFormat.parse(txtDateEnd.getText().toString());
+            dateEnd.setTime(dateEnd.getTime()+ 24 * 60 * 60 *1000);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         TaskList.clear();
-        TaskList.addAll(taskProvider.getTaskList(dateStart,dateEnd,false));
+        taskProvider.getAllTask(new Provider.TaskChangeCallBack() {
+            @Override
+            public void onFinish(ArrayList<Task> listTask) {
 
-        taskAdapter.notifyDataSetChanged();
+                Task task;
+                for ( int i = 0; i < listTask.size(); i++) {
+
+                    task = listTask.get(i);
+                    if ( task.getDate().compareTo(dateStart) < 0 ||  task.getDate().compareTo(dateEnd) > 0 || task.isComplete() ) {
+                        listTask.remove(i);
+                        i--;
+                    }
+                }
+                TaskList.addAll(listTask);
+                taskAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void showTaskCompelte() {
 
-        Date dateStart = null;
-        Date dateEnd = null;
         try {
             dateStart = Utils.dateFormat.parse(txtDateStart.getText().toString());
             dateEnd = Utils.dateFormat.parse(txtDateEnd.getText().toString());
+            dateEnd.setTime(dateEnd.getTime()+ 24 * 60 * 60 *1000);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         TaskList.clear();
-        TaskList.addAll(taskProvider.getTaskList(dateStart,dateEnd,true));
-        taskAdapter.notifyDataSetChanged();
+        taskProvider.getAllTask(new Provider.TaskChangeCallBack() {
+            @Override
+            public void onFinish(ArrayList<Task> listTask) {
+
+                Task task;
+                for ( int i = 0; i < listTask.size(); i++) {
+
+                    task = listTask.get(i);
+                    if ( task.getDate().compareTo(dateStart) < 0 ||  task.getDate().compareTo(dateEnd) > 0 || !task.isComplete()) {
+                        listTask.remove(i);
+                        i--;
+                    }
+                }
+                TaskList.addAll(listTask);
+                taskAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void addControls() {
@@ -277,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
     private void setEvent_radioButtonSelectedChange() {
 
         rgViewMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -330,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             {
                 Task selectedTask = TaskList.get( viewHolder.getAdapterPosition() );
 
-                Provider.deleteTask( selectedTask.getId() );
+                taskProvider.deleteTask( selectedTask.getId() );
 
                 MainActivity.TaskList.remove( viewHolder.getAdapterPosition() );
 
@@ -359,10 +509,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         Task newTask = (Task) data.getSerializableExtra("TASK");
+
         if(newTask!=null){
             taskProvider.insertTask(newTask);
             showTask();
         }
+
+    }
+
+    private void restartInLocale(Locale locale)
+    {
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        Resources resources = getResources();
+        resources.updateConfiguration(config, null);
+        recreate();
     }
 }

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.example.trancaoviet.myhelper"
         minSdkVersion 18
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,16 +20,24 @@ android {
 }
 
 dependencies {
-    //implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.android.support:design:27.1.1'
     compile 'com.github.twinkle942910:monthyearpicker:0.0.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:design:23.0.1'
+    compile 'com.google.firebase:firebase-core:16.0.1'
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.android.support:design:27.1.1'
+    compile 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    compile "com.android.support:design:24.2.0"
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 }
+apply plugin: 'com.google.gms.google-services'

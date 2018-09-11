@@ -1,7 +1,11 @@
 package com.example.trancaoviet.myhelper;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Task implements Serializable{
@@ -12,6 +16,22 @@ public class Task implements Serializable{
     private Time time;
     private boolean isComplete;
     private boolean hasNotifycation;
+
+    public Task() {
+    }
+
+    public Task(DBTask dbTask){
+        Id = dbTask.getId();
+        Content = dbTask.getContent();
+        try {
+            date = new SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy").parse(dbTask.getDate());
+            time = new Time( new SimpleDateFormat("hh:mm:ss").parse( dbTask.getTime() ).getTime() );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        isComplete = dbTask.isComplete();
+        hasNotifycation = dbTask.isHasNotifycation();
+    }
 
     public Task(int id, String content, Date date, Time time, boolean isComplete, boolean hasNotifycation) {
         Id = id;
